@@ -20,13 +20,13 @@ tokenizer = Wav2Vec2Processor.from_pretrained("pretrained_finetuned")
 
 """
 """
-f = open("/home/tuht/PL/loss.txt", 'a')
+f = open("/home/tuht/train_wav2vec/loss.txt", 'a')
 data = MDD_Dataset()
 print(data)
 net = Acoustic_Phonetic_Linguistic()
 net.to('cuda')
 
-net = torch.load('/home/tuht/PL/MDD_Checkpoint/best.pth80')
+net = torch.load('/home/tuht/train_wav2vec/MDD_Checkpoint/checkpoint_AdamW_16head_PL.pth')
 # net = net.to('cpu')
 train_loader = DataLoader(dataset=data,
                           batch_size=1,
@@ -43,7 +43,7 @@ ctc_loss = nn.CTCLoss(blank = 95)
 optimizer = optim.AdamW(net.parameters(), lr = 0.000001)
 # optimizer = optim.SGD(net.parameters(), 0.01, momentum = 0.9)
 # optimizer = torch.load('/home/tuht/train_wav2vec/MDD_Checkpoint/checkpoint_optim.pth')
-for epoch in range(101):  # loop over the dataset multiple times
+for epoch in range(15):  # loop over the dataset multiple times
 
     running_loss = 0.0
     for i, data in enumerate(train_loader):
@@ -66,12 +66,11 @@ for epoch in range(101):  # loop over the dataset multiple times
         outputs = (F.log_softmax(outputs, dim=2))
         loss = ctc_loss(outputs, labels, input_lengths, target_lengths)
         print(loss)
-        f.write("(" +str(epoch) + "," + str(i) + ")" + "  loss: " + str(loss) + "\n") 
+        f.write("(" +str(epoch+5) + "," + str(i) + ")" + "  loss: " + str(loss) + "\n") 
         loss.backward()
         optimizer.step()
-    
-    if epoch%10 == 0:
-        torch.save(net, '/home/tuht/PL/MDD_Checkpoint/checkpoint_AdamW_16head_PL.pth' + str(epoch))
+            
+    torch.save(net, '/home/tuht/train_wav2vec/MDD_Checkpoint/checkpoint_AdamW_16head_PL.pth')
     # torch.save(optimizer, '/home/tuht/train_wav2vec/MDD_Checkpoint/checkpoint_optim_Adam.pth')
         
 print('Finished Training')

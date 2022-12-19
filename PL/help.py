@@ -12,7 +12,7 @@ def wav_norm(path):
     data = librosa.feature.mfcc(y, sr=22050, hop_length=441, n_mfcc = 80)
     energy = librosa.feature.rms(y=y, hop_length = 441)
     data = np.concatenate((data,energy),axis=0) #acoustic data
-    if (t/0.02-(t/0.02)//1 <=0.25) or (t/0.02-(t/0.02)//1 >0.97):
+    if (t/0.02-(t/0.02)//1 <=0.247) or (t/0.02-(t/0.02)//1 >0.999):
         data = np.delete(data,obj = [len(data[0])-1,len(data[0])-2],axis = 1)
     else:
         data = np.delete(data,obj = len(data[0])-1, axis = 1) 

@@ -34,7 +34,7 @@ class Linguistic_encoder(nn.Module):
         # print(c_n)
         y = self.fc1(h_n)
         x = self.fc3(h_n)
-        print("pass")
+
         return x,y
 
 
