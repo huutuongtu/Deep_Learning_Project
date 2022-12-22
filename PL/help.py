@@ -39,6 +39,23 @@ def Atention(Hq, Hk):
     # print(torch.tensor(Matrix).shape)
     return Matrix
 
+def filter_norm(path):
+    (rate,sig) = wav.read(path)
+    filter, energy = fbank(sig,rate, winlen=0, winstep = 0.02, nfilt=80)
+    filter = filter.reshape(80, -1)
+    energy = energy.reshape(1,-1)
+    data = np.concatenate((filter,energy))
+    t = librosa.get_duration(filename = path)
+    # data = librosa.feature.mfcc(y, sr=22050, hop_length=441, n_mfcc = 80)
+    # energy = librosa.feature.rms(y=y, hop_length = 441)
+    # data = np.concatenate((data,energy),axis=0) #acoustic data
+    #song 0.21 
+    # if (t/0.02-(t/0.02)//1 <=0.247) or (t/0.02-(t/0.02)//1 >0.999):
+    #     data = np.delete(data,obj = [len(data[0])-1],axis = 1)
+    # else:
+    #     data = np.delete(data,obj = len(data[0])-1, axis = 1) 
+    return data
+
 
 
 
