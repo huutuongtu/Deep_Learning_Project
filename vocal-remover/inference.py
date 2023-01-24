@@ -113,7 +113,6 @@ def main():
     p.add_argument('--sr', '-r', type=int, default=44100)
     p.add_argument('--n_fft', '-f', type=int, default=2048)
     p.add_argument('--hop_length', '-H', type=int, default=1024)
-    p.add_argument('--batchsize', '-B', type=int, default=4)
     p.add_argument('--cropsize', '-c', type=int, default=256)
     p.add_argument('--output_image', '-I', action='store_true')
     p.add_argument('--postprocess', '-p', action='store_true')
@@ -144,7 +143,7 @@ def main():
     X_spec = spec_utils.wave_to_spectrogram(X, args.hop_length, args.n_fft)
     print('done')
 
-    sp = Separator(model, device, args.batchsize, args.cropsize, args.postprocess)
+    sp = Separator(model, device, 1, args.cropsize, args.postprocess)
 
     if args.tta:
         y_spec, v_spec = sp.separate_tta(X_spec)
