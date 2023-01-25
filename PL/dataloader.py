@@ -12,21 +12,18 @@ from char_embedding import tensor_to_text,text_to_tensor
 import librosa
 import numpy as np
 
-data = pd.read_csv("/home/tuht/train_wav2vec/train.csv")
+data = pd.read_csv("/home/tuht/train_wav2vec/vi/vi/validated.csv", sep='\t')
 sample = data.shape[0]
-cols = ['Path', 'Canonical', 'Transcript']
-# phonetic_dir = '/home/tuht/train_wav2vec/phonetic/'
-# pitch_dir = '/home/tuht/train_wav2vec/pitch/'
-phonetic_dir = '/home/tuht/train_wav2vec/phonetic/'
-pitch_dir = '/home/tuht/train_wav2vec/pitch/'
+cols = ['path', 'sentence']
+
 class MDD_Dataset(Dataset):
 
     def __init__(self):
         acoustic_canonical = data
         self.n_samples = sample
-        A = acoustic_canonical['Path']
-        C = acoustic_canonical['Canonical']
-        B = acoustic_canonical['Transcript'] #output
+        A = acoustic_canonical['path']
+        C = acoustic_canonical['sentence']
+        B = acoustic_canonical['sentence'] #output
         
 
         self.A_data = A 
@@ -36,13 +33,17 @@ class MDD_Dataset(Dataset):
     # support indexing such that dataset[i] can be used to get i-th sample
     def __getitem__(self, index):
         p = self.A_data[index]
-        phonetic = phonetic_dir + p + ".npy"
-        phonetic = np.load(phonetic)
-        phonetic = torch.tensor(phonetic)
-        # phonetic = torch.tensor(p)
+        p = p.split("/")[7]
+        p = p.split(".")[0]
+        base_dir = '/home/tuht/train_wav2vec/phonetic/'
+        p = p + str(".npy")
+        p = np.load(base_dir + str(p))
+        phonetic = torch.tensor(p)
         # print(self.A_data[index])
-        acoustic = torch.tensor(0)
-        # acoustic = acoustic.unsqueeze(0)
+        acoustic = wav_norm(self.A_data[index])
+        acoustic = acoustic.T
+        acoustic = torch.tensor(acoustic)
+        acoustic = acoustic.unsqueeze(0)
         linguistic = text_to_tensor(self.C_data[index])
         linguistic = torch.tensor(linguistic)
         label = text_to_tensor(self.y_data[index])

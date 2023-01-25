@@ -15,7 +15,7 @@ def clean_corpus(str1):
             res1 = "".join([res1, i])
     return res1
 d = 0
-with open('/home/tuht/train_wav2vec/vocab.json') as f:
+with open('vocab.json') as f:
     d = json.load(f)
 def text_to_tensor(str):
     text = str
