@@ -44,5 +44,22 @@ class Acoustic_Phonetic_Linguistic(nn.Module):
         output = self.fc1(before_Linear)
         # print(output.shape)
         return output.squeeze(0)
+
+
+class Phonetic_Only(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.Phonetic_encoder = Phonetic_encoder()
+        # self.phonetic_embedding = phonetic_embedding
+        self.fc1 = nn.Linear(768,96, bias = True)   
+
+
+
+    def forward(self, phonetic):
+  
+        phonetic = self.Phonetic_encoder(phonetic) #batch x time x 768
+        output = self.fc1(phonetic)
+        # print(output.shape)
+        return output.squeeze(0)
         
         
